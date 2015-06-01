@@ -6,7 +6,7 @@
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5218822E-12A6-47F8-95F7-B123E3569A3B}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>BetterSirene</RootNamespace>
     <AssemblyName>BetterSirene</AssemblyName>
   </PropertyGroup>
@@ -47,14 +47,24 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>..\..\.ssd\SteamApps\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
+    <Reference Include="System">
+      <HintPath>..\..\.ssd\SteamApps\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core">
+      <HintPath>..\..\.ssd\SteamApps\steamapps\common\Cities_Skylines\Cities_Data\Managed\System.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="V10Siren.cs" />
     <Compile Include="V10SirenAudioOptions.cs" />
-    <Compile Include="Utils.cs" />
+    <Compile Include="AssemblyInfo.cs" />
     <Compile Include="V10CoreMod.cs" />
+    <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\V10SirenAudioButton.png" />
   </ItemGroup>
 </Project>

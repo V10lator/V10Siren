@@ -2,6 +2,7 @@ using ColossalFramework.IO;
 using ColossalFramework.Steamworks;
 using ICities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace V10Siren
 	public class V10Siren : V10CoreMod
 	{
 		private string _name = "V10Siren";
-		private string _version = "0.4";
+		private string _version = "0.5";
 		private string[] _descriptions = { "Better horns",
 		"TATUUUUUU - TATAAAAA",
 		"Is this still a game?",
@@ -44,96 +45,25 @@ namespace V10Siren
 		}
 	}
 	
-	public class V10SirenLoadingListener : LoadingExtensionBase
+/*	public class V10SirenLoadingListener : LoadingExtensionBase
 	{
+		private V10SirenAudioOptions options;
+		
 		public override void OnLevelLoaded (LoadMode mode)
 		{
-			/*
+			
 			if (mode != LoadMode.LoadGame && mode != LoadMode.NewGame)
 				return;
 			
-			// Search our ogg file...
-			// ... Mod folder first...
-			string ogg = null;
-			string toFind = Path.DirectorySeparatorChar + "V10Siren";
-			string path = Path.Combine (DataLocation.addonsPath, "Mods"); //addonsPath
 			try {
-				if (Directory.Exists (path)) {
-					string[] dirs = Directory.GetDirectories (path);
-					foreach (string dir in dirs) {
-						if (dir.EndsWith (toFind)) {
-							ogg = Path.Combine (dir, "V10Siren.ogg");
-							if (!File.Exists (ogg))
-								ogg = null;
-							else
-								break;
-						}
-					}
-				}
-			} catch (Exception) {
-			}
-			
-			// ... Steam Workshop folder next...
-			if (ogg == null) {
-				PublishedFileId[] subscribedItems = Steam.workshop.GetSubscribedItems ();
-				foreach (PublishedFileId id in subscribedItems) {
-					path = Steam.workshop.GetSubscribedItemPath (id);
-					ogg = Path.Combine (path, "V10Siren.ogg");
-					if (!File.Exists (ogg))
-						ogg = null;
-					else
-						break;
-				}
-			}
-			
-			if (ogg == null) { // File couldn't be found!
-				V10Siren.Log ("Couldn't find ogg file!", true);
-				return;
-			}
-			ogg = "file://" + ogg;
-			
-			AudioClip clip;
-			try {
-				WWW www = new WWW (ogg);
-				while (!www.isDone)
-					Thread.Sleep (2);
-				clip = www.GetAudioClip (true, false);
-				clip.LoadAudioData ();
-				while (clip.loadState != AudioDataLoadState.Loaded) {
-					if (clip.loadState == AudioDataLoadState.Failed) {
-						V10Siren.Log("Loading audio data failed!", true);
-						return;
-					}
-					Thread.Sleep (2);
-				}
+				GameObject gameObject = GameObject.FindWithTag ("GameController");
+				this.options = gameObject.AddComponent<V10SirenAudioOptions> ();
 			} catch (Exception e) {
-				V10Siren.Log (e, "loading ogg file", true);
+				Utils.Log (e, "initializing audio options", true);
 				return;
 			}
-			
-			float[] data = new float[clip.channels * clip.samples], tmpData;
-			clip.GetData (data, 0);
-			AudioClip[] clips = Resources.FindObjectsOfTypeAll<AudioClip> ();
-			foreach (AudioClip cl in clips) {
-				if (cl.name == "siren" || cl.name == "fire_sirens") {
-					tmpData = new float[cl.channels * cl.samples];
-					if (data.Length > tmpData.Length)
-						V10Siren.Log (
-							"V10Siren.cfg bigger than "+cl.name+" clip:\nV10Siren.cfg: "+data.Length+"\n"+cl.name+": "+tmpData.Length+"\nV10Siren.cfg gets cutted, this might soud bad!",
-							false
-							);
-					for (int i = 0; i < tmpData.Length; i++) {
-						if (i < data.Length)
-							tmpData [i] = data [i];
-						else
-							tmpData [i] = 0.0f;
-					}
-					cl.SetData (tmpData, 0);
-				}
-			}
-			*/
 		}
-	}
+	}*/
 	
 	public class V10SirenThreadingListener : ThreadingExtensionBase
 	{
@@ -174,29 +104,56 @@ namespace V10Siren
 		
 		public override void OnUpdate (float realTimeDelta, float simulationTimeDelta)
 		{
-			AudioSource[] audioSources = GameObject.FindObjectsOfType<AudioSource> ();
-			if (audioSources.Length == 0)
+			bool policeInjected = policeClip == null;
+			bool firetruckInjected = firetruckClip == null;
+			
+			if (policeInjected && firetruckInjected)
 				return;
-			bool playing, police;
-			foreach (AudioSource source in audioSources) {
-				if (source.clip == null || source.clip.name == null || source.clip.name == "V10Siren")
+			
+			HashSet<VehicleInfo> infoCache = new HashSet<VehicleInfo> ();
+			bool stop, realStop = false, police;
+			foreach (Vehicle vehicle in VehicleManager.instance.m_vehicles.m_buffer) {
+				if (infoCache.Contains (vehicle.Info))
 					continue;
-				police = source.clip.name == "siren";
-				if (!police && source.clip.name != "fire_sirens")
-					continue;
-				playing = source.isPlaying;
-				if (playing)
-					source.Stop ();
-				if (police)
-					source.clip = this.policeClip;
-				else {
-					source.clip = this.firetruckClip;
-					source.pitch = 1;
+				infoCache.Add (vehicle.Info);
+				stop = false;
+				SoundEffect soundEffect;
+				foreach (VehicleInfo.Effect effect in vehicle.Info.m_effects) {
+					if (!effect.m_effect.name.Contains ("Emergency"))
+						continue;
+					foreach (MultiEffect.SubEffect subEffect in effect.m_effect.GetComponent<MultiEffect>().m_effects) {
+						if (subEffect.m_effect.name == ("Police Car Siren")) {
+							police = true;
+						} else if (subEffect.m_effect.name == ("Ambulance Siren")) {
+							police = false;
+						} else
+							continue;
+						
+						soundEffect = subEffect.m_effect.GetComponent<SoundEffect> ();
+						if (soundEffect == null)
+							continue;
+						
+						if(police) {
+							soundEffect.m_audioInfo.m_clip = policeClip;
+							policeClip = null;
+						} else {
+							soundEffect.m_audioInfo.m_clip = firetruckClip;
+							firetruckClip = null;
+						}
+						soundEffect.m_audioInfo.m_loop = true;
+						soundEffect.m_audioInfo.m_pitch = 1;
+						stop = true;
+						break;
+						
+					}
+					if (stop) {
+						if (policeInjected && firetruckInjected)
+							realStop = true;
+						break;
+					}
 				}
-				source.rolloffMode = AudioRolloffMode.Logarithmic;
-				source.loop = true;
-				if (playing)
-					source.Play ();
+				if (realStop)
+					break;
 			}
 		}
 	}
