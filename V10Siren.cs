@@ -13,7 +13,7 @@ namespace V10Siren
 	public class V10Siren : V10CoreMod
 	{
 		private string _name = "V10Siren";
-		private string _version = "0.5";
+		private string _version = "0.6";
 		private string[] _descriptions = { "Better horns",
 		"TATUUUUUU - TATAAAAA",
 		"Is this still a game?",
@@ -67,12 +67,13 @@ namespace V10Siren
 	
 	public class V10SirenThreadingListener : ThreadingExtensionBase
 	{
-		private AudioClip policeClip = null, firetruckClip = null;
+		private AudioClip policeClip = null, ambulanceClip = null, firetruckClip = null;
 		
 		public V10SirenThreadingListener ()
 		{
 			// Search our ogg file...
 			loadOgg ("V10Siren.ogg", ref this.policeClip);
+			loadOgg ("V10AmbulanceSiren.ogg", ref this.ambulanceClip);
 			loadOgg ("V10FireSiren.ogg", ref this.firetruckClip);
 		}
 		
@@ -105,49 +106,63 @@ namespace V10Siren
 		public override void OnUpdate (float realTimeDelta, float simulationTimeDelta)
 		{
 			bool policeInjected = policeClip == null;
+			bool ambulanceInjected = ambulanceClip == null;
 			bool firetruckInjected = firetruckClip == null;
 			
-			if (policeInjected && firetruckInjected)
+			if (policeInjected && ambulanceInjected && firetruckInjected)
 				return;
 			
 			HashSet<VehicleInfo> infoCache = new HashSet<VehicleInfo> ();
-			bool stop, realStop = false, police;
+			bool stop, realStop = false;
+			AudioClip clip = null;
+			SoundEffect soundEffect;
 			foreach (Vehicle vehicle in VehicleManager.instance.m_vehicles.m_buffer) {
 				if (infoCache.Contains (vehicle.Info))
 					continue;
 				infoCache.Add (vehicle.Info);
 				stop = false;
-				SoundEffect soundEffect;
 				foreach (VehicleInfo.Effect effect in vehicle.Info.m_effects) {
 					if (!effect.m_effect.name.Contains ("Emergency"))
 						continue;
 					foreach (MultiEffect.SubEffect subEffect in effect.m_effect.GetComponent<MultiEffect>().m_effects) {
-						if (subEffect.m_effect.name == ("Police Car Siren")) {
-							police = true;
-						} else if (subEffect.m_effect.name == ("Ambulance Siren")) {
-							police = false;
-						} else
+						switch (subEffect.m_effect.name) {
+						case "Police Car Siren":
+							clip = policeClip;
+							if (!policeInjected) {
+								policeClip = null;
+								policeInjected = true;
+							}
+							break;
+						case "Ambulance Siren":
+							clip = ambulanceClip;
+							if (!ambulanceInjected) {
+								ambulanceClip = null;
+								ambulanceInjected = true;
+							}
+							break;
+						case "Fire Truck Siren":
+							clip = firetruckClip;
+							if (!firetruckInjected) {
+								firetruckClip = null;
+								firetruckInjected = true;
+							}
+							break;
+						default:
+							clip = null;
+							break;
+						}
+						if (clip == null)
 							continue;
 						
 						soundEffect = subEffect.m_effect.GetComponent<SoundEffect> ();
-						if (soundEffect == null)
-							continue;
-						
-						if(police) {
-							soundEffect.m_audioInfo.m_clip = policeClip;
-							policeClip = null;
-						} else {
-							soundEffect.m_audioInfo.m_clip = firetruckClip;
-							firetruckClip = null;
-						}
+						soundEffect.m_audioInfo.m_clip = clip;
 						soundEffect.m_audioInfo.m_loop = true;
 						soundEffect.m_audioInfo.m_pitch = 1;
 						stop = true;
 						break;
-						
 					}
 					if (stop) {
-						if (policeInjected && firetruckInjected)
+						if (policeInjected && ambulanceInjected && firetruckInjected)
 							realStop = true;
 						break;
 					}
