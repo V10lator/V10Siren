@@ -125,7 +125,6 @@ namespace V10Siren
 						case "Police Car Siren":
 							clip = policeClip;
 							if (!policeInjected) {
-								Utils.Log ("---- Changed police to" + clip, false);
 								policeClip = null;
 								policeInjected = true;
 							}
@@ -133,7 +132,6 @@ namespace V10Siren
 						case "Ambulance Siren":
 							clip = ambulanceClip;
 							if (!ambulanceInjected) {
-								Utils.Log ("---- Changed ambulance to" + clip, false);
 								ambulanceClip = null;
 								ambulanceInjected = true;
 							}
@@ -141,7 +139,6 @@ namespace V10Siren
 						case "Fire Truck Siren":
 							clip = firetruckClip;
 							if (!firetruckInjected) {
-								Utils.Log ("---- Changed firetruck to" + clip, false);
 								firetruckClip = null;
 								firetruckInjected = true;
 							}
