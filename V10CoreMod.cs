@@ -12,7 +12,6 @@ namespace V10CoreUtils
 	{
 		string realName { get; }
 		
-		string streamID { get; }
+		string steamID { get; }
 	}
 }
-

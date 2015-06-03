@@ -108,7 +108,6 @@ namespace V10CoreUtils
 			// ... Mod folder first...
 			PluginManager.PluginInfo plugin = getPluginInfo ();
 			if (plugin != null && plugin.modPath != null) {
-				Utils.Log (plugin.modPath, false);
 				string file = Path.Combine (plugin.modPath, filename);
 				if (File.Exists (file))
 					return file;
@@ -159,11 +158,10 @@ namespace V10CoreUtils
 			foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
 				if (info == null || info.name == null)
 					continue;
-				if (info.name == mod.realName || info.name == mod.streamID)
+				if (info.name == mod.realName || info.name == mod.steamID)
 					return info;
 			}
 			return null;
 		}
 	}
 }
-

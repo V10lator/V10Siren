@@ -33,7 +33,7 @@ namespace V10Siren
 			}
 		}
 		
-		public string streamID
+		public string steamID
 		{
 			get {
 				return "435167188";
