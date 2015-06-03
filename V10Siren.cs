@@ -4,6 +4,7 @@ using ICities;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Threading;
 using UnityEngine;
 using V10CoreUtils;
@@ -12,8 +13,7 @@ namespace V10Siren
 {
 	public class V10Siren : V10CoreMod
 	{
-		private string _name = "V10Siren";
-		private string _version = "0.6";
+		private string _realName = null, _name = null;
 		private string[] _descriptions = { "Better horns",
 		"TATUUUUUU - TATAAAAA",
 		"Is this still a game?",
@@ -25,24 +25,41 @@ namespace V10Siren
 			Utils.init (this);
 		}
 		
-		public string realName
-		{
-			get { return this._name; }
+		public string realName {
+			get {
+				if (this._realName == null)
+					readAssembly ();
+				return this._realName;
+			}
 		}
 		
 		public string streamID
 		{
-			get { return "435167188"; }
+			get {
+				return "435167188";
+			}
 		}
 		
 		public string Name {
-			get { return this._name + " v" + this._version; }
+			get {
+				if (this._name == null)
+					readAssembly ();
+				return this._name;
+			}
 		}
 		
 		public string Description
 		{
 			get { return this._descriptions[this.rand.Next(this._descriptions.Length)]; }
 		}
+		
+		private void readAssembly ()
+		{
+			Assembly me = Assembly.GetExecutingAssembly ();
+			this._realName = me.GetName ().Name;
+			this._name = this._realName + " v" + me.GetName ().Version;
+		}
+	}
 	}
 	
 /*	public class V10SirenLoadingListener : LoadingExtensionBase
@@ -91,7 +108,7 @@ namespace V10Siren
 				while (!www.isDone)
 					Thread.Sleep (2);
 				clip = www.GetAudioClip (true, false);
-				clip.name = "V10Siren";
+				clip.name = "V10Siren "+ogg;
 				clip.LoadAudioData ();
 				while (clip.loadState != AudioDataLoadState.Loaded) {
 					if (clip.loadState == AudioDataLoadState.Failed)
@@ -129,6 +146,7 @@ namespace V10Siren
 						case "Police Car Siren":
 							clip = policeClip;
 							if (!policeInjected) {
+								Utils.Log ("---- Changed police to" + clip, false);
 								policeClip = null;
 								policeInjected = true;
 							}
@@ -136,6 +154,7 @@ namespace V10Siren
 						case "Ambulance Siren":
 							clip = ambulanceClip;
 							if (!ambulanceInjected) {
+								Utils.Log ("---- Changed ambulance to" + clip, false);
 								ambulanceClip = null;
 								ambulanceInjected = true;
 							}
@@ -143,6 +162,7 @@ namespace V10Siren
 						case "Fire Truck Siren":
 							clip = firetruckClip;
 							if (!firetruckInjected) {
+								Utils.Log ("---- Changed firetruck to" + clip, false);
 								firetruckClip = null;
 								firetruckInjected = true;
 							}
