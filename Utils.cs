@@ -153,10 +153,7 @@ namespace V10CoreUtils
 		private static PluginManager.PluginInfo cachedPluginInfo = null;
 		public static PluginManager.PluginInfo getPluginInfo ()
 		{
-			if (!Utils.ready)
-				return null;
-			
-			if (cachedPluginInfo == null)
+			if (Utils.ready && cachedPluginInfo == null)
 				foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
 					if (info == null || info.name == null)
 						continue;
