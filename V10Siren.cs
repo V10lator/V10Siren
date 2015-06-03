@@ -11,9 +11,9 @@ using V10CoreUtils;
 
 namespace V10Siren
 {
-	public class V10Siren : V10CoreMod
+	public class V10Siren : IUserMod
 	{
-		private string _realName = null, _name = null;
+		private string _name = null;
 		private string[] _descriptions = { "Better horns",
 		"TATUUUUUU - TATAAAAA",
 		"Is this still a game?",
@@ -25,25 +25,12 @@ namespace V10Siren
 			Utils.init (this);
 		}
 		
-		public string realName {
-			get {
-				if (this._realName == null)
-					readAssembly ();
-				return this._realName;
-			}
-		}
-		
-		public string steamID
-		{
-			get {
-				return "435167188";
-			}
-		}
-		
 		public string Name {
 			get {
-				if (this._name == null)
-					readAssembly ();
+				if (this._name == null) {
+					AssemblyName me = Assembly.GetExecutingAssembly ().GetName ();
+					this._name = me.Name + " v" + me.Version;
+				}
 				return this._name;
 			}
 		}
@@ -52,14 +39,6 @@ namespace V10Siren
 		{
 			get { return this._descriptions[this.rand.Next(this._descriptions.Length)]; }
 		}
-		
-		private void readAssembly ()
-		{
-			Assembly me = Assembly.GetExecutingAssembly ();
-			this._realName = me.GetName ().Name;
-			this._name = this._realName + " v" + me.GetName ().Version;
-		}
-	}
 	}
 	
 /*	public class V10SirenLoadingListener : LoadingExtensionBase

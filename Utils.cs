@@ -6,6 +6,7 @@
 using ColossalFramework.IO;
 using ColossalFramework.Plugins;
 using ColossalFramework.Steamworks;
+using ICities;
 using System;
 using System.IO;
 using UnityEngine;
@@ -14,11 +15,11 @@ namespace V10CoreUtils
 {
 	public class Utils
 	{
-		private static V10CoreMod mod;
+		private static IUserMod mod;
 		private static bool _ready = false;
 		private static string _version = "0.1";
 		
-		public static void init (V10CoreMod mod)
+		public static void init (IUserMod mod)
 		{
 			Utils.mod = mod;
 			Utils._ready = true;
@@ -155,10 +156,10 @@ namespace V10CoreUtils
 		{
 			if (Utils.ready && cachedPluginInfo == null)
 				foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
-					if (info == null || info.name == null)
+					if (info == null)
 						continue;
-					if (info.name == mod.realName || info.name == mod.steamID) {
-						cachedPluginInfo = mod;
+					if (mod == info.userModInstance) {
+						cachedPluginInfo = info;
 						break;
 					}
 				}
