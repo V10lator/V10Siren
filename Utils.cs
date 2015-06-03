@@ -150,18 +150,23 @@ namespace V10CoreUtils
 			return null;*/
 		}
 		
+		private static PluginManager.PluginInfo cachedPluginInfo = null;
 		public static PluginManager.PluginInfo getPluginInfo ()
 		{
 			if (!Utils.ready)
 				return null;
 			
-			foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
-				if (info == null || info.name == null)
-					continue;
-				if (info.name == mod.realName || info.name == mod.steamID)
-					return info;
-			}
-			return null;
+			if (cachedPluginInfo == null)
+				foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
+					if (info == null || info.name == null)
+						continue;
+					if (info.name == mod.realName || info.name == mod.steamID) {
+						cachedPluginInfo = mod;
+						break;
+					}
+				}
+			
+			return cachedPluginInfo;
 		}
 	}
 }
