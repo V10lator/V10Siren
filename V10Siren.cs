@@ -112,15 +112,23 @@ namespace V10Siren
 			bool stop, realStop = false;
 			AudioClip clip = null;
 			SoundEffect soundEffect;
+			MultiEffect multiEffect;
 			foreach (Vehicle vehicle in VehicleManager.instance.m_vehicles.m_buffer) {
-				if (infoCache.Contains (vehicle.Info))
+				if (vehicle.Info == null || infoCache.Contains (vehicle.Info))
 					continue;
 				infoCache.Add (vehicle.Info);
+				if (vehicle.Info.m_effects == null)
+					continue;
 				stop = false;
 				foreach (VehicleInfo.Effect effect in vehicle.Info.m_effects) {
-					if (!effect.m_effect.name.Contains ("Emergency"))
+					if (effect.m_effect == null || !effect.m_effect.name.Contains ("Emergency"))
 						continue;
-					foreach (MultiEffect.SubEffect subEffect in effect.m_effect.GetComponent<MultiEffect>().m_effects) {
+					multiEffect = effect.m_effect.GetComponent<MultiEffect> ();
+					if (multiEffect == null || multiEffect.m_effects == null)
+						continue;
+					foreach (MultiEffect.SubEffect subEffect in multiEffect.m_effects) {
+						if (subEffect.m_effect == null)
+							continue;
 						switch (subEffect.m_effect.name) {
 						case "Police Car Siren":
 							clip = policeClip;
