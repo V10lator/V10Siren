@@ -67,7 +67,6 @@ namespace V10Siren
 
 		public override void OnCreated(ILoading loading)
 		{
-			Utils.Log("Loading: " + loading.loadingComplete, false);
 			if (Utils.getPlugin(818641631ul) != null)
 			{
 				V10Siren._running = false;

@@ -191,7 +191,6 @@ namespace V10CoreUtils
 			foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
 				if (info == null)
 					continue;
-				Utils.Log("Checking " + info.name + " / " + info.publishedFileID.AsUInt64, false);
 				if (info.publishedFileID.AsUInt64 == id)
 					return info;
 			}
