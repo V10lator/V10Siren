@@ -66,5 +66,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\V10SirenAudioButton.png" />
+    <None Include="AmbientSoundsTuner.SoundPacks.xml" />
   </ItemGroup>
 </Project>

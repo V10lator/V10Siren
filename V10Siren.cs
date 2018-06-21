@@ -16,8 +16,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-using ColossalFramework.IO;
-using ColossalFramework.Steamworks;
+//using ColossalFramework.IO;
+//using ColossalFramework.Steamworks;
 using ICities;
 using System;
 using System.Collections.Generic;
@@ -29,7 +29,7 @@ using V10CoreUtils;
 
 namespace V10Siren
 {
-	public class V10Siren : IUserMod
+	public class V10Siren : LoadingExtensionBase, IUserMod
 	{
 		private string _name = null;
 		private string[] _descriptions = { "Better horns",
@@ -37,10 +37,11 @@ namespace V10Siren
 		"Is this still a game?",
 		"(c) 2015 Thomas \"V10lator\" Rohloff"};
 		private System.Random rand = new System.Random();
-		
-		public V10Siren ()
+		private static bool _running = false;
+
+		public V10Siren()
 		{
-			Utils.init (this);
+			Utils.init(this);
 		}
 		
 		public string Name {
@@ -56,6 +57,35 @@ namespace V10Siren
 		public string Description
 		{
 			get { return this._descriptions[this.rand.Next(this._descriptions.Length)]; }
+		}
+
+		public static bool running
+		{
+			get
+			{
+				return V10Siren._running;
+			}
+		}
+
+		public override void OnCreated(ILoading loading)
+		{
+			Utils.Log("Loading: " + loading.loadingComplete, false);
+			if (Utils.getPlugin(818641631ul) != null)
+			{
+				V10Siren._running = false;
+				Utils.Log("Ambient Sounds Tuner 2.0 detected. Disabling ourself!", true);
+			}
+			else
+			{
+				V10Siren._running = true;
+				Utils.Log("Running in standalone mode!", false);
+				V10SirenThreadingListener.loadOggs();
+			}
+		}
+
+		public override void OnReleased()
+		{
+			V10Siren._running = false;
 		}
 	}
 	
@@ -81,17 +111,18 @@ namespace V10Siren
 	
 	public class V10SirenThreadingListener : ThreadingExtensionBase
 	{
-		private AudioClip policeClip = null, ambulanceClip = null, firetruckClip = null;
-		
-		public V10SirenThreadingListener ()
+		private static AudioClip policeClip = null, ambulanceClip = null, firetruckClip = null;
+
+		public static void loadOggs()
 		{
-			// Search our ogg file...
-			loadOgg ("V10Siren.ogg", ref this.policeClip);
-			loadOgg ("V10AmbulanceSiren.ogg", ref this.ambulanceClip);
-			loadOgg ("V10FireSiren.ogg", ref this.firetruckClip);
+			if (!V10Siren.running)
+				return;
+			loadOgg("V10Siren.ogg", ref policeClip);
+			loadOgg("V10AmbulanceSiren.ogg", ref ambulanceClip);
+			loadOgg("V10FireSiren.ogg", ref firetruckClip);
 		}
 		
-		private void loadOgg (string file, ref AudioClip clip)
+		private static void loadOgg (string file, ref AudioClip clip)
 		{
 			string ogg = Utils.getFileInModFolder (file);
 			if (ogg == null) { // File couldn't be found!
@@ -119,6 +150,9 @@ namespace V10Siren
 		
 		public override void OnUpdate (float realTimeDelta, float simulationTimeDelta)
 		{
+			if (!V10Siren.running)
+				return;
+			
 			bool policeInjected = policeClip == null;
 			bool ambulanceInjected = ambulanceClip == null;
 			bool firetruckInjected = firetruckClip == null;

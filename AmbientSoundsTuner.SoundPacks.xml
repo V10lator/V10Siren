@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<SoundPacksFile version="2">
+	<SoundPacks>
+		<SoundPack name="V10Siren">
+			<Vehicles>
+				<Vehicle type="Ambulance Siren" name="V10Siren Ambulance">
+					<AudioInfo>
+						<Clip>V10AmbulanceSiren.ogg</Clip>
+						<Volume>1.0</Volume>
+						<MaxVolume>1.0</MaxVolume>
+						<Pitch>1</Pitch>
+						<FadeLength>6</FadeLength>
+						<IsLoop>true</IsLoop>
+						<Is3D>true</Is3D>
+						<IsRandomTime>true</IsRandomTime>
+					</AudioInfo>
+				</Vehicle>
+				<Vehicle type="Fire Truck Siren" name="V10Siren Fire Truck">
+					<AudioInfo>
+						<Clip>V10FireSiren.ogg</Clip>
+						<Volume>1.0</Volume>
+						<MaxVolume>1.0</MaxVolume>
+						<Pitch>1</Pitch>
+						<FadeLength>6</FadeLength>
+						<IsLoop>true</IsLoop>
+						<Is3D>true</Is3D>
+						<IsRandomTime>true</IsRandomTime>
+					</AudioInfo>
+				</Vehicle>
+				<Vehicle type="Police Car Siren" name="V10Siren Police Car">
+					<AudioInfo>
+						<Clip>V10Siren.ogg</Clip>
+						<Volume>1.0</Volume>
+						<MaxVolume>1.0</MaxVolume>
+						<Pitch>1</Pitch>
+						<FadeLength>6</FadeLength>
+						<IsLoop>true</IsLoop>
+						<Is3D>true</Is3D>
+						<IsRandomTime>true</IsRandomTime>
+					</AudioInfo>
+				</Vehicle>
+			</Vehicles>
+		</SoundPack>
+	</SoundPacks>
+</SoundPacksFile>

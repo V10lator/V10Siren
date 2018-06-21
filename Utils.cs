@@ -21,9 +21,9 @@
  * It might get splitted into a library later but right now
  * copying it is a save way to end the world as we know it.
  */
-using ColossalFramework.IO;
+//using ColossalFramework.IO;
 using ColossalFramework.Plugins;
-using ColossalFramework.Steamworks;
+//using ColossalFramework.Steamworks;
 using ICities;
 using System;
 using System.IO;
@@ -35,7 +35,7 @@ namespace V10CoreUtils
 	{
 		private static IUserMod mod;
 		private static bool _ready = false;
-		private static string _version = "0.1";
+		private static string _version = "0.2";
 		
 		public static void init (IUserMod mod)
 		{
@@ -108,12 +108,12 @@ namespace V10CoreUtils
 		{
 			if (!Utils.ready)
 				return false;
-			Utils._ready = false;
 			PluginManager.PluginInfo plugin = Utils.getPluginInfo ();
 			if (plugin == null) {
 				Utils.Log ("Couldn't disable!", false);
 				return false;
 			}
+			Utils._ready = false;
 			plugin.Unload ();
 			Utils.Log ("Disabled! Have a nice day.", false);
 			return true;
@@ -183,6 +183,21 @@ namespace V10CoreUtils
 				}
 			
 			return cachedPluginInfo;
+		}
+
+		public static PluginManager.PluginInfo getPlugin (ulong id)
+		{
+			if (!Utils.ready)
+				return null;
+
+			foreach (PluginManager.PluginInfo info in PluginManager.instance.GetPluginsInfo ()) {
+				if (info == null)
+					continue;
+				Utils.Log("Checking " + info.name + " / " + info.publishedFileID.AsUInt64, false);
+				if (info.publishedFileID.AsUInt64 == id)
+					return info;
+			}
+			return null;
 		}
 	}
 }
