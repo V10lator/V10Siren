@@ -6,8 +6,8 @@
 				<Vehicle type="Ambulance Siren" name="V10Siren Ambulance">
 					<AudioInfo>
 						<Clip>V10AmbulanceSiren.ogg</Clip>
-						<Volume>1.0</Volume>
-						<MaxVolume>1.0</MaxVolume>
+						<Volume>2.0</Volume>
+						<MaxVolume>2.0</MaxVolume>
 						<Pitch>1</Pitch>
 						<FadeLength>6</FadeLength>
 						<IsLoop>true</IsLoop>
@@ -18,8 +18,8 @@
 				<Vehicle type="Fire Truck Siren" name="V10Siren Fire Truck">
 					<AudioInfo>
 						<Clip>V10FireSiren.ogg</Clip>
-						<Volume>1.0</Volume>
-						<MaxVolume>1.0</MaxVolume>
+						<Volume>2.0</Volume>
+						<MaxVolume>2.0</MaxVolume>
 						<Pitch>1</Pitch>
 						<FadeLength>6</FadeLength>
 						<IsLoop>true</IsLoop>
@@ -30,8 +30,8 @@
 				<Vehicle type="Police Car Siren" name="V10Siren Police Car">
 					<AudioInfo>
 						<Clip>V10Siren.ogg</Clip>
-						<Volume>1.0</Volume>
-						<MaxVolume>1.0</MaxVolume>
+						<Volume>2.0</Volume>
+						<MaxVolume>2.0</MaxVolume>
 						<Pitch>1</Pitch>
 						<FadeLength>6</FadeLength>
 						<IsLoop>true</IsLoop>

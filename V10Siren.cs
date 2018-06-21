@@ -211,6 +211,7 @@ namespace V10Siren
 						soundEffect.m_audioInfo.m_clip = clip;
 						soundEffect.m_audioInfo.m_loop = true;
 						soundEffect.m_audioInfo.m_pitch = 1;
+						soundEffect.m_audioInfo.m_volume = 2.0f;
 						stop = true;
 						break;
 					}
