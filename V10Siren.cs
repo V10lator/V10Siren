@@ -33,7 +33,7 @@ namespace V10Siren
 		private string[] _descriptions = { "Better horns",
 		"TATUUUUUU - TATAAAAA",
 		"Is this still a game?",
-		"(c) 2015 Thomas \"V10lator\" Rohloff"};
+		"(c) 2015-2018 Thomas \"V10lator\" Rohloff"};
 		private System.Random rand = new System.Random();
 		private static bool _running = false;
 
