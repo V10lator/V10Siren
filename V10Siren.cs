@@ -16,8 +16,6 @@
  * <http://www.gnu.org/licenses/>.
  */
 
-//using ColossalFramework.IO;
-//using ColossalFramework.Steamworks;
 using ICities;
 using System;
 using System.Collections.Generic;

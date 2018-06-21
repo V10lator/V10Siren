@@ -21,9 +21,7 @@
  * It might get splitted into a library later but right now
  * copying it is a save way to end the world as we know it.
  */
-//using ColossalFramework.IO;
 using ColossalFramework.Plugins;
-//using ColossalFramework.Steamworks;
 using ICities;
 using System;
 using System.IO;
